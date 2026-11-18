@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Interview Resource Organizer
+PrepDrop — AI-powered prep resource organizer
 Run: streamlit run app.py
 """
 
@@ -12,7 +12,7 @@ from docx import Document
 from docx.shared import Pt
 
 # ── Config ─────────────────────────────────────────────────────────────────────
-DEFAULT_ROOT = str(Path(os.environ.get("NOTES_ROOT", "~/interview-notes")).expanduser())
+DEFAULT_ROOT = str(Path(os.environ.get("NOTES_ROOT", "~/prep-notes")).expanduser())
 MODEL        = os.environ.get("ORGANIZER_MODEL", "claude-opus-4-5")
 MAX_ITER     = 20
 # ───────────────────────────────────────────────────────────────────────────────
@@ -208,7 +208,7 @@ def dispatch(root: Path, name: str, args: dict) -> str:
 
 def organize(user_input: str, root: Path, client: anthropic.Anthropic) -> None:
     system = f"""\
-You are an intelligent organizer for interview-preparation notes.
+You are an intelligent organizer for prep notes and resources.
 
 Notes folder: {root}
 
@@ -282,7 +282,7 @@ Never ask for confirmation — just act."""
 # ── UI ──────────────────────────────────────────────────────────────────────────
 
 st.set_page_config(
-    page_title="Resource Organizer",
+    page_title="PrepDrop",
     page_icon="🗂️",
     layout="wide",
 )
@@ -319,7 +319,7 @@ with st.sidebar:
         st.caption("Set `NOTES_ROOT` env var or edit the path above.")
 
 # ── Main ───────────────────────────────────────────────────────────────────────
-st.title("🗂️  Interview Resource Organizer")
+st.title("🗂️  PrepDrop")
 
 user_input = st.text_area(
     "Resource",
@@ -337,7 +337,7 @@ user_input = st.text_area(
 client = get_client()
 ready = bool(user_input.strip() and root.exists() and client)
 
-go = st.button("Organize →", type="primary", disabled=not ready)
+go = st.button("Drop it →", type="primary", disabled=not ready)
 
 if not client and not os.environ.get("ANTHROPIC_API_KEY"):
     st.caption("⚠️ Enter your Anthropic API key in the sidebar to get started.")
