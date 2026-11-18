@@ -17,7 +17,11 @@ MODEL        = os.environ.get("ORGANIZER_MODEL", "claude-opus-4-5")
 MAX_ITER     = 20
 # ───────────────────────────────────────────────────────────────────────────────
 
-client = anthropic.Anthropic()
+def get_client():
+    key = os.environ.get("ANTHROPIC_API_KEY") or st.session_state.get("api_key", "")
+    if not key:
+        return None
+    return anthropic.Anthropic(api_key=key)
 
 
 # ── Filesystem helpers ──────────────────────────────────────────────────────────
@@ -202,7 +206,7 @@ def dispatch(root: Path, name: str, args: dict) -> str:
 
 # ── Agentic loop ────────────────────────────────────────────────────────────────
 
-def organize(user_input: str, root: Path) -> None:
+def organize(user_input: str, root: Path, client: anthropic.Anthropic) -> None:
     system = f"""\
 You are an intelligent organizer for interview-preparation notes.
 
@@ -285,6 +289,21 @@ st.set_page_config(
 
 # ── Sidebar ────────────────────────────────────────────────────────────────────
 with st.sidebar:
+    # API key (hidden if already set via env var)
+    if not os.environ.get("ANTHROPIC_API_KEY"):
+        st.subheader("API key")
+        api_key_input = st.text_input(
+            "Anthropic API key",
+            type="password",
+            label_visibility="collapsed",
+            placeholder="sk-ant-...",
+        )
+        if api_key_input:
+            st.session_state["api_key"] = api_key_input
+        if not st.session_state.get("api_key"):
+            st.caption("Get a key at [console.anthropic.com](https://console.anthropic.com)")
+        st.divider()
+
     st.subheader("Notes folder")
     root_str = st.text_input("Path", value=DEFAULT_ROOT, label_visibility="collapsed")
     root = Path(root_str).expanduser().resolve()
@@ -315,14 +334,16 @@ user_input = st.text_area(
     ),
 )
 
-go = st.button(
-    "Organize →",
-    type="primary",
-    disabled=not (user_input.strip() and root.exists()),
-)
+client = get_client()
+ready = bool(user_input.strip() and root.exists() and client)
 
-if go and user_input.strip():
-    organize(user_input.strip(), root)
+go = st.button("Organize →", type="primary", disabled=not ready)
+
+if not client and not os.environ.get("ANTHROPIC_API_KEY"):
+    st.caption("⚠️ Enter your Anthropic API key in the sidebar to get started.")
+
+if go and ready:
+    organize(user_input.strip(), root, client)
     st.divider()
     if st.button("↺  Refresh folder tree"):
         st.rerun()
