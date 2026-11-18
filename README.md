@@ -14,8 +14,14 @@ The app reads your folder structure, decides the best location, and writes or ap
 
 ## Setup
 
-### 1. Get an Anthropic API key
-Go to [console.anthropic.com](https://console.anthropic.com), create an account, and generate an API key. The free tier is enough to get started.
+### 1. Get an API key
+
+PrepDrop works with either **Anthropic** or **OpenAI** — use whichever you already have.
+
+- **Anthropic:** [console.anthropic.com](https://console.anthropic.com) — keys start with `sk-ant-`
+- **OpenAI:** [platform.openai.com](https://platform.openai.com) — keys start with `sk-`
+
+The free tier of either is enough to get started.
 
 ### 2. Set up your notes folder
 Organize it however you like — by company, by topic, or both. Example:
@@ -41,7 +47,7 @@ cd prepdrop
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-export ANTHROPIC_API_KEY="sk-ant-..."
+export ANTHROPIC_API_KEY="sk-ant-..."   # or OPENAI_API_KEY="sk-..."
 export NOTES_ROOT="/path/to/your/notes"
 streamlit run app.py
 ```
@@ -54,7 +60,7 @@ If you don't want to run anything locally, open the hosted version instead:
 
 **[prepdrop.streamlit.app →](https://prepdrop.streamlit.app)**
 
-No installation needed — just bring your Anthropic API key. The one limitation: your notes folder must be cloud-synced (Dropbox, Google Drive, or iCloud Drive) so the app can reach it. Enter the full path to it in the sidebar, e.g. `/Users/yourname/Dropbox/prep-notes`.
+No installation needed — just bring your API key. The one limitation: your notes folder must be cloud-synced (Dropbox, Google Drive, or iCloud Drive) so the app can reach it. Enter the full path in the sidebar, e.g. `/Users/yourname/Dropbox/prep-notes`.
 
 ## Tips
 
@@ -64,4 +70,4 @@ No installation needed — just bring your Anthropic API key. The one limitation
 
 ## Cost
 
-Each resource you organize costs roughly $0.01–0.03 in API usage depending on how much Claude needs to explore your folder. With a $5 Anthropic credit you can organize hundreds of resources.
+Each resource costs roughly $0.01–0.03 in API usage depending on how much the model needs to explore your folder. With a $5 credit you can organize hundreds of resources.
