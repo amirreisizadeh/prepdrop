@@ -1,4 +1,4 @@
-# 🗂️ PrepDrop
+# <img src="icon.png" width="40" valign="middle"> PrepDrop
 
 Stop manually sorting your prep materials. Paste a link, note, or resource — the app figures out where it belongs in your folder and puts it there.
 
